@@ -48,7 +48,7 @@ function App() {
   };
 
   if (error) {
-    return `Error: ${error}`;
+    return <div>{`Error: ${error}`}</div>;
   }
 
   if (loading || !data) {
