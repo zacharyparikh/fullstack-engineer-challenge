@@ -47,6 +47,10 @@ function App() {
     setOffset(limit * (newPage - 1));
   };
 
+  if (error) {
+    return `Error: ${error}`;
+  }
+
   if (loading || !data) {
     return <h3>Loading...</h3>;
   }
