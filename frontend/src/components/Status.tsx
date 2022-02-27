@@ -4,7 +4,7 @@ interface StatusProps {
   status: PolicyStatus;
 }
 
-export function Status({ status }: StatusProps) {
+function Status({ status }: StatusProps): JSX.Element | null {
   switch (status) {
     case PolicyStatus.ACTIVE:
       return (
@@ -30,5 +30,9 @@ export function Status({ status }: StatusProps) {
           Pending
         </span>
       );
+    default:
+      return null;
   }
 }
+
+export default Status;

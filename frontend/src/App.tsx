@@ -1,13 +1,13 @@
 import './index.css';
 import { gql, useQuery } from '@apollo/client';
-import { Policy } from './types/Policy';
-import { Status } from './components/Status';
 import { useState } from 'react';
-import { Pagination } from './components/Pagination';
+import { Policy } from './types/Policy';
+import Status from './components/Status';
+import Pagination from './components/Pagination';
 
 const GET_POLICIES = gql`
-  query GetPolicies($offset: Int, $limit: Int) {
-    policyList(offset: $offset, limit: $limit) {
+  query GetPolicies($offset: Int, $limit: Int, $sort: SortBy) {
+    policyList(offset: $offset, limit: $limit, sort: $sort) {
       policies {
         provider
         customer {
@@ -36,11 +36,15 @@ interface Data {
   };
 }
 
-function App() {
+function App(): JSX.Element {
   const [offset, setOffset] = useState(0);
   const limit = 10;
+  const sort = {
+    fields: ['createdAt'],
+    order: 'ASC',
+  };
   const { loading, error, data } = useQuery<Data>(GET_POLICIES, {
-    variables: { offset, limit },
+    variables: { offset, limit, sort },
   });
 
   const handlePageChange = (newPage: number) => {
@@ -55,7 +59,7 @@ function App() {
     return <h3>Loading...</h3>;
   }
 
-  const { policies, total, hasNextPage } = data.policyList;
+  const { policies, total } = data.policyList;
   const currentPage = Math.ceil(offset / limit) + 1;
   const totalPages = Math.ceil(total / limit);
   return (
@@ -147,7 +151,7 @@ function App() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                         {new Date(
-                          policy.customer.dateOfBirth
+                          policy.customer.dateOfBirth,
                         ).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
@@ -163,12 +167,12 @@ function App() {
                         {new Date(policy.endDate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a
-                          href="#"
+                        <button
+                          type="button"
                           className="text-indigo-600 hover:text-indigo-900"
                         >
                           Edit
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -177,9 +181,19 @@ function App() {
               <div className="bg-white px-6 py-3 flex flex-1 items-center justify-between border-t border-gray-200">
                 <div>
                   <p className="font-medium text-gray-500">
-                    Showing <span className="font-bold">{offset + 1}</span> to{' '}
-                    <span className="font-bold">{offset + limit}</span> of{' '}
-                    <span className="font-bold">{total}</span> policies
+                    Showing
+                    {' '}
+                    <span className="font-bold">{offset + 1}</span>
+                    {' '}
+                    to
+                    {' '}
+                    <span className="font-bold">{offset + limit}</span>
+                    {' '}
+                    of
+                    {' '}
+                    <span className="font-bold">{total}</span>
+                    {' '}
+                    policies
                   </p>
                 </div>
                 <div>

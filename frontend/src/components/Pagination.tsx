@@ -11,7 +11,7 @@ const range = (start: number, end: number): number[] => {
   return Array.from({ length }, (_, idx) => idx + start);
 };
 
-export function Pagination({
+function Pagination({
   currentPage,
   totalPages,
   onPageChange,
@@ -55,31 +55,33 @@ export function Pagination({
   return (
     <nav>
       <button
+        type="button"
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(currentPage - 1)}
         className="rounded shadow px-2 mx-1 border-gray-300 border font-medium hover:bg-gray-100 bg-white"
       >
         Previous
       </button>
-      {paginationRange.map((button: PageButton) =>
-        button === currentPage ? (
-          <button
-            disabled
-            className="rounded shadow px-2 mx-1 border-indigo-300 border font-medium  bg-indigo-50 text-indigo-500"
-          >
-            {button}
-          </button>
-        ) : (
-          <button
-            disabled={button === ELLIPSIS}
-            onClick={() => button !== ELLIPSIS && onPageChange(Number(button))}
-            className="rounded shadow px-2 mx-1 border-gray-300 border font-medium hover:bg-gray-100 bg-white"
-          >
-            {button}
-          </button>
-        )
-      )}
+      {paginationRange.map((button: PageButton) => (button === currentPage ? (
+        <button
+          type="button"
+          disabled
+          className="rounded shadow px-2 mx-1 border-indigo-300 border font-medium  bg-indigo-50 text-indigo-500"
+        >
+          {button}
+        </button>
+      ) : (
+        <button
+          type="button"
+          disabled={button === ELLIPSIS}
+          onClick={() => button !== ELLIPSIS && onPageChange(Number(button))}
+          className="rounded shadow px-2 mx-1 border-gray-300 border font-medium hover:bg-gray-100 bg-white"
+        >
+          {button}
+        </button>
+      )))}
       <button
+        type="button"
         disabled={!hasNextPage}
         onClick={() => onPageChange(currentPage + 1)}
         className="rounded shadow px-2 mx-1 border-gray-300 border font-medium hover:bg-gray-100 bg-white"
@@ -89,3 +91,5 @@ export function Pagination({
     </nav>
   );
 }
+
+export default Pagination;

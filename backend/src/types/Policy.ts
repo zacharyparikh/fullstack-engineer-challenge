@@ -1,6 +1,6 @@
 import type { Customer } from './Customer';
 
-enum InsuranceType {
+export enum InsuranceType {
   LIABILITY = 'LIABILITY',
   HOUSEHOLD = 'HOUSEHOLD',
   HEALTH = 'HEALTH',
@@ -14,10 +14,11 @@ export enum PolicyStatus {
 }
 
 export interface Policy {
+  [index: string]: Customer | string | number;
   customer: Customer;
   provider: string;
-  insuranceType: InsuranceType;
-  status: PolicyStatus;
+  insuranceType: string;
+  status: string;
   policyNumber: string;
   startDate: number;
   endDate: number;
