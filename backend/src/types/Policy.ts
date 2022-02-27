@@ -19,7 +19,7 @@ export interface Policy {
   provider: string;
   insuranceType: string;
   status: string;
-  policyNumber: string;
+  policyNumber: number;
   startDate: number;
   endDate: number;
   createdAt: number;

@@ -13,7 +13,7 @@ interface Policy {
   provider: string;
   insuranceType: InsuranceType;
   status: PolicyStatus;
-  policyNumber: string;
+  policyNumber: number;
   startDate: number;
   endDate: number;
   createdAt: number;
@@ -25,7 +25,9 @@ const insuranceTypes: InsuranceType[] = [
   InsuranceType.HEALTH,
 ];
 
-const randomElement = <T>(array: T[]): T => array[Math.trunc(Math.random() * array.length)] as T;
+const randomElement = <T>(array: T[]): T => array[
+  Math.trunc(Math.random() * (array.length - 1))
+];
 
 const generateCustomer = (): Customer => ({
   firstName: faker.name.firstName(),
@@ -61,7 +63,7 @@ const generatePolicy = (customers: Customer[]): Policy => {
     return randomElement([PolicyStatus.ACTIVE, PolicyStatus.DROPPED_OUT]);
   };
 
-  const policyNumber = String(id);
+  const policyNumber = id;
   id += 1;
   return {
     customer,

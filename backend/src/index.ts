@@ -21,13 +21,7 @@ const dateScalar = new GraphQLScalarType({
   },
 });
 
-// A schema is a collection of type definitions (hence "typeDefs")
-// that together define the "shape" of queries that are executed against
-// your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-
-  # This "Book" type defines the queryable fields for every book in our data source.
   scalar Date
 
   enum Order {
@@ -51,7 +45,7 @@ const typeDefs = gql`
     provider: String
     insuranceType: InsuranceType
     status: PolicyStatus
-    policyNumber: String
+    policyNumber: Int
     startDate: Date
     endDate: Date
     createdAt: Date
@@ -76,9 +70,6 @@ const typeDefs = gql`
     hasNextPage: Boolean
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     policyList(offset: Int, limit: Int, sort: SortBy): PolicyList
     customers: [Customer]
@@ -112,7 +103,8 @@ const sortPolicies = (policiesList: Policy[], sort: SortBy): Policy[] => {
     }, policy);
 
   const sortByField = fields[fields.length - 1];
-  const sortedPolicyList = sortedPolicyLists.get(sortByField);
+  const sortedPolicyListKey = `${sortByField}:${order}`;
+  const sortedPolicyList = sortedPolicyLists.get(sortedPolicyListKey);
   if (sortedPolicyList !== undefined) {
     return sortedPolicyList;
   }
@@ -121,8 +113,6 @@ const sortPolicies = (policiesList: Policy[], sort: SortBy): Policy[] => {
     const valueA = getSortedByValue(policyA);
     const valueB = getSortedByValue(policyB);
     const sign = order === Order.ASC ? 1 : -1;
-    console.log(policyA, valueA);
-    console.log(sign);
 
     if (typeof valueA === 'object' || typeof valueB === 'object') {
       throw new Error('cannot sort by object type');
@@ -139,7 +129,7 @@ const sortPolicies = (policiesList: Policy[], sort: SortBy): Policy[] => {
     throw new Error('sort values were not same type');
   });
 
-  sortedPolicyLists.set(sortByField, newSortedPolicyList);
+  sortedPolicyLists.set(sortedPolicyListKey, newSortedPolicyList);
   return newSortedPolicyList;
 };
 

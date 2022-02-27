@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Policy } from './types/Policy';
 import Status from './components/Status';
 import Pagination from './components/Pagination';
+import TableHeader from './components/TableHeader';
+import { Order } from './types/SortBy';
 
 const GET_POLICIES = gql`
   query GetPolicies($offset: Int, $limit: Int, $sort: SortBy) {
@@ -38,18 +40,16 @@ interface Data {
 
 function App(): JSX.Element {
   const [offset, setOffset] = useState(0);
+  const [sort, setSort] = useState({
+    fields: ['policyNumber'],
+    order: Order.ASC,
+  });
   const limit = 10;
-  const sort = {
-    fields: ['createdAt'],
-    order: 'ASC',
-  };
   const { loading, error, data } = useQuery<Data>(GET_POLICIES, {
-    variables: { offset, limit, sort },
+    variables: { offset, limit, sort: { ...sort, order: sort.order === Order.ASC ? 'ASC' : 'DESC' } },
   });
 
-  const handlePageChange = (newPage: number) => {
-    setOffset(limit * (newPage - 1));
-  };
+  const handlePageChange = (newPage: number) => setOffset(limit * (newPage - 1));
 
   if (error) {
     return <div>{`Error: ${error}`}</div>;
@@ -75,60 +75,69 @@ function App(): JSX.Element {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    <TableHeader
+                      field="policyNumber"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['policyNumber'], order })}
                     >
                       Policy Number
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="status"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['status'], order })}
                     >
                       Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="provider"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['provider'], order })}
                     >
                       Provider
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="lastName"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['customer', 'lastName'], order })}
                     >
                       Customer Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="dateOfBirth"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['customer', 'dateOfBirth'], order })}
                     >
                       Customer DOB
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="insuranceType"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['insuranceType'], order })}
                     >
                       Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="createdAt"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['createdAt'], order })}
                     >
                       Created
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="startDate"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['startDate'], order })}
                     >
                       Start
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    </TableHeader>
+                    <TableHeader
+                      field="endDate"
+                      sort={sort}
+                      onClick={(order: Order) => setSort({ fields: ['endDate'], order })}
                     >
                       End
-                    </th>
+                    </TableHeader>
                     <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
                     </th>
